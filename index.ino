@@ -6,6 +6,7 @@ const int motorLeftPin = 9;
 const int motorRightPin = 10;
 
 const int threshold = 1000;
+boolean isProcessing = false;
 void setup() {
   //9ピンを出力ピンに設定
   pinMode(motorLeftPin, OUTPUT);
@@ -32,6 +33,9 @@ void vib(int motorPin) {
 }
 
 void loop() {
+  if(isProcessing == true) {
+    return;
+  }
   
   char state = 'S';
   
@@ -41,15 +45,18 @@ void loop() {
   
   //Left or Right
   if((micLeftValue >= threshold) && (micRightValue >= threshold)) {
+    isProcessing = true;
     state = 'B';
     show('L', micLeftValue);
     show('R', micRightValue);
   }else {
     if(micRightValue >= threshold) {
+      isProcessing = true;
       state = 'R';
       show('R', micRightValue);
     }
     if(micLeftValue >= threshold) {
+      isProcessing = true;
       state = 'L';
       show('L', micLeftValue);
     }
@@ -71,6 +78,11 @@ void loop() {
     break;
   default:
     Serial.println("nothing");
+  }
+  
+  if(isProcessing == true) {
+    delay(3000);
+    isProcessing = false;
   }
   
   Serial.println("");
