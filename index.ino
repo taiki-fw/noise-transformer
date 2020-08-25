@@ -5,6 +5,7 @@ const int micRightPin = A1;
 const int motorLeftPin = 9;
 const int motorRightPin = 10;
 
+const int threshold = 1000;
 void setup() {
   //9ピンを出力ピンに設定
   pinMode(motorLeftPin, OUTPUT);
@@ -39,16 +40,16 @@ void loop() {
   int micRightValue = analogRead(micRightPin);
   
   //Left or Right
-  if((micLeftValue >= 1000) && (micRightValue >= 1000)) {
+  if((micLeftValue >= threshold) && (micRightValue >= threshold)) {
     state = 'B';
     show('L', micLeftValue);
     show('R', micRightValue);
   }else {
-    if(micRightValue >= 1000) {
+    if(micRightValue >= threshold) {
       state = 'R';
       show('R', micRightValue);
     }
-    if(micLeftValue >= 1000) {
+    if(micLeftValue >= threshold) {
       state = 'L';
       show('L', micLeftValue);
     }
