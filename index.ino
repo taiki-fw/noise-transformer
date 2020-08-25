@@ -7,12 +7,13 @@ const int motorRightPin = 10;
 
 const int threshold = 1000;
 boolean isProcessing = false;
+
 void setup() {
   //9ピンを出力ピンに設定
   pinMode(motorLeftPin, OUTPUT);
   pinMode(motorRightPin, OUTPUT);
   //シリアル通信を開始します
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 void show(char state, int value) {
