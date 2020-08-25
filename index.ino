@@ -19,7 +19,7 @@ void setup() {
 void show(char state, int value) {
   	if(state == 'L') {  
 	  	Serial.print("LeftValue:");
-    }else {
+    }else if(state == 'R') {
         Serial.print("RightValue:");
     }
   	Serial.print(abs(value));
