@@ -8,6 +8,13 @@ const int motorRightPin = 10;
 const int threshold = 1000;
 boolean isProcessing = false;
 
+int count = 5;
+int rAvgArr[100] = {0, 0, 0, 0, 0};
+int rSum = 0;
+int lAvgArr[100] = {0, 0, 0, 0, 0};
+int lSum = 0;
+double elem = 5.0;
+
 void setup() {
   //9ピンを出力ピンに設定
   pinMode(motorLeftPin, OUTPUT);
@@ -26,11 +33,15 @@ void show(char state, int value) {
   	Serial.println("");
 }
 
-void vib(int motorPin) {
+void vib(int motorPin, int pattern) {
+  for(int i = 0; i < pattern; i++){
+    Serial.print("start");
 	digitalWrite(motorPin, HIGH);
     delay(500);
+	Serial.print("stop");
     digitalWrite(motorPin, LOW);
     delay(500); 
+  }
 }
 
 void loop() {
@@ -42,39 +53,52 @@ void loop() {
   
   //マイクの音量(電圧)を測り、micValueという場所(変数)に入れておきます
   int micLeftValue = analogRead(micLeftPin);
+  lAvgArr[count] = micLeftValue;
+  
   int micRightValue = analogRead(micRightPin);
+  rAvgArr[count] = micRighttValue;
+    
+  rSum = rSum + (micRighttValue - rAvgArr[count-elem]);
+  lSum = lSum + (micLeftValue - lAvgArr[count-elem]);
+    
+  count++;
+  
+  double rAvg = rSum / elem;
+  double lAvg = lSum / elem;
+  
+  Serial.println();
   
   //Left or Right
-  if((micLeftValue >= threshold) && (micRightValue >= threshold)) {
+  if((lAvg >= threshold) && (rAvg >= threshold)) {
     isProcessing = true;
     state = 'B';
-    show('L', micLeftValue);
-    show('R', micRightValue);
+    show('L', lAvg);
+    show('R', rAvg);
   }else {
-    if(micRightValue >= threshold) {
+    if(rAvg >= threshold) {
       isProcessing = true;
       state = 'R';
-      show('R', micRightValue);
+      show('R', rAvg);
     }
-    if(micLeftValue >= threshold) {
+    if(lAvg >= threshold) {
       isProcessing = true;
       state = 'L';
-      show('L', micLeftValue);
+      show('L', lAvg);
     }
   }
   
   switch (state) {
   case 'B':
-    vib(motorRightPin);
-    vib(motorLeftPin);
+    vib(motorRightPin, 1);
+    vib(motorLeftPin, 1);
     Serial.println("both ... both");
     break;
   case 'R':
-    vib(motorRightPin);
+    vib(motorRightPin, 1);
     Serial.println("right ... right");
     break;
   case 'L':
-    vib(motorLeftPin); 
+    vib(motorLeftPin, 1); 
     Serial.println("left ... left");
     break;
   default:
@@ -82,7 +106,7 @@ void loop() {
   }
   
   if(isProcessing == true) {
-    delay(3000);
+    delay(1000);
     isProcessing = false;
   }
   
