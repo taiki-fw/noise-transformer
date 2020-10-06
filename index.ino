@@ -8,6 +8,7 @@ const int motorRightPin = 10;
 const int threshold = 1000;
 boolean isProcessing = false;
 
+// State
 int count = 5;
 int rAvgArr[100] = {0, 0, 0, 0, 0};
 int rSum = 0;
@@ -21,6 +22,14 @@ void setup() {
   pinMode(motorRightPin, OUTPUT);
   //シリアル通信を開始します
   Serial.begin(115200);
+}
+
+void resetState() {
+  count = 5;
+  rAvgArr[100] = {0, 0, 0, 0, 0};
+  rSum = 0;
+  lAvgArr[100] = {0, 0, 0, 0, 0};
+  lSum = 0;
 }
 
 void show(char state, int value) {
@@ -52,10 +61,10 @@ void loop() {
   char state = 'S';
   
   //マイクの音量(電圧)を測り、micValueという場所(変数)に入れておきます
-  int micLeftValue = analogRead(micLeftPin);
+  int micLeftValue = abs(analogRead(micLeftPin));
   lAvgArr[count] = micLeftValue;
   
-  int micRightValue = analogRead(micRightPin);
+  int micRightValue = abs(analogRead(micRightPin));
   rAvgArr[count] = micRightValue;
     
   rSum = rSum + (micRightValue - rAvgArr[count-elem]);
@@ -66,22 +75,23 @@ void loop() {
   double rAvg = rSum / (double)elem;
   double lAvg = lSum / (double)elem;
   
-  Serial.println();
-  
   //Left or Right
   if((lAvg >= threshold) && (rAvg >= threshold)) {
     isProcessing = true;
+    resetState();
     state = 'B';
     show('L', lAvg);
     show('R', rAvg);
   }else {
     if(rAvg >= threshold) {
       isProcessing = true;
+      resetState();
       state = 'R';
       show('R', rAvg);
     }
     if(lAvg >= threshold) {
       isProcessing = true;
+      resetState();
       state = 'L';
       show('L', lAvg);
     }
