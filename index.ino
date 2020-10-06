@@ -13,7 +13,7 @@ int rAvgArr[100] = {0, 0, 0, 0, 0};
 int rSum = 0;
 int lAvgArr[100] = {0, 0, 0, 0, 0};
 int lSum = 0;
-double elem = 5.0;
+int elem = 5;
 
 void setup() {
   //9ピンを出力ピンに設定
@@ -63,8 +63,8 @@ void loop() {
     
   count++;
   
-  double rAvg = rSum / elem;
-  double lAvg = lSum / elem;
+  double rAvg = rSum / (double)elem;
+  double lAvg = lSum / (double)elem;
   
   Serial.println();
   
