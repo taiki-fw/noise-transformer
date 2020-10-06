@@ -56,9 +56,9 @@ void loop() {
   lAvgArr[count] = micLeftValue;
   
   int micRightValue = analogRead(micRightPin);
-  rAvgArr[count] = micRighttValue;
+  rAvgArr[count] = micRightValue;
     
-  rSum = rSum + (micRighttValue - rAvgArr[count-elem]);
+  rSum = rSum + (micRightValue - rAvgArr[count-elem]);
   lSum = lSum + (micLeftValue - lAvgArr[count-elem]);
     
   count++;
