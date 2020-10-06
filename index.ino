@@ -1,3 +1,5 @@
+#include <string.h>
+
 //ピンを宣言します
 const int micLeftPin = A0;
 const int micRightPin = A1;
@@ -5,8 +7,10 @@ const int micRightPin = A1;
 const int motorLeftPin = 9;
 const int motorRightPin = 10;
 
-const int threshold = 1000;
+const int threshold = 800;
 boolean isProcessing = false;
+
+int defaultValue[100] = {1, 0, 0, 0, 0};
 
 // State
 int count = 5;
@@ -26,10 +30,11 @@ void setup() {
 
 void resetState() {
   count = 5;
-  rAvgArr[100] = {0, 0, 0, 0, 0};
   rSum = 0;
-  lAvgArr[100] = {0, 0, 0, 0, 0};
   lSum = 0;
+  memcpy(rAvgArr, defaultValue, sizeof(defaultValue));
+  memcpy(lAvgArr, defaultValue, sizeof(defaultValue));
+  Serial.println(rAvgArr[0]);
 }
 
 void show(char state, int value) {
