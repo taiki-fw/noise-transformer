@@ -10,7 +10,7 @@ const int motorRightPin = 10;
 const int threshold = 800;
 boolean isProcessing = false;
 
-int defaultValue[100] = {1, 0, 0, 0, 0};
+int defaultValue[100] = {0, 0, 0, 0, 0};
 
 // State
 int count = 5;
