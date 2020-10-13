@@ -34,25 +34,38 @@ void swapArr(int newRightValue, int newLeftValue) {
   return;
 }
 
-void show(char state, int value) {
-  	if(state == 'L') {  
-	  	Serial.print("LeftValue:");
-    }else if(state == 'R') {
-        Serial.print("RightValue:");
-    }
-  	Serial.print(abs(value));
-  	Serial.println("");
-}
-
 void vib(int motorPin, int pattern) {
   for(int i = 0; i < pattern; i++){
-    Serial.print("start");
-	digitalWrite(motorPin, HIGH);
+    Serial.print("start ");
+	  digitalWrite(motorPin, HIGH);
     delay(500);
-	Serial.print("stop");
+	  Serial.print("stop\n");
     digitalWrite(motorPin, LOW);
     delay(500); 
   }
+}
+
+void debugCode(double rAvg, double lAvg) {
+  String rightResult = "[";
+  for(int i = 0; i < elem; i++) {
+    rightResult += rAvgArr[i];
+    rightResult += ' ';
+  }
+  rightResult += "]";
+  rightResult += "rAvg ";
+  rightResult += (String)rAvg;
+
+  String leftResult = "[";
+  for(int i = 0; i < elem; i++) {
+    leftResult += lAvgArr[i];
+    leftResult += ' ';
+  }
+  leftResult += "]";
+  leftResult += "lAvg ";
+  leftResult += (String)lAvg;
+
+  Serial.println(rightResult);
+  Serial.println(leftResult);
 }
 
 void loop() {
@@ -71,41 +84,39 @@ void loop() {
     
   swapArr(micRightValue, micLeftValue);
   
-  double rAvg = rSum / (double)elem;
-  double lAvg = lSum / (double)elem;
+  double rAvg = (double)rSum / (double)elem;
+  double lAvg = (double)lSum / (double)elem;
+
+  debugCode(rAvg, lAvg);
   
   //Left or Right
   if((lAvg >= threshold) && (rAvg >= threshold)) {
     isProcessing = true;
     state = 'B';
-    show('L', lAvg);
-    show('R', rAvg);
   }else {
     if(rAvg >= threshold) {
       isProcessing = true;
       state = 'R';
-      show('R', rAvg);
     }
     if(lAvg >= threshold) {
       isProcessing = true;
       state = 'L';
-      show('L', lAvg);
     }
   }
   
   switch (state) {
   case 'B':
+    Serial.println("both ... both");
     vib(motorRightPin, 1);
     vib(motorLeftPin, 1);
-    Serial.println("both ... both");
     break;
   case 'R':
-    vib(motorRightPin, 1);
     Serial.println("right ... right");
+    vib(motorRightPin, 1);
     break;
   case 'L':
-    vib(motorLeftPin, 1); 
     Serial.println("left ... left");
+    vib(motorLeftPin, 1); 
     break;
   default:
     Serial.println("nothing");
