@@ -2,10 +2,10 @@
 const int micLeftPin = A0;
 const int micRightPin = A1;
 
-const int motorLeftPin = 9;
-const int motorRightPin = 10;
+const int motorLeftPin = 8;
+const int motorRightPin = 9;
 
-const int threshold = 800;
+const int threshold = 300;
 boolean isProcessing = false;
 
 // State
