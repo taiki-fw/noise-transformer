@@ -7,6 +7,7 @@ const int motorRightPin = 9;
 
 const int threshold = 300;
 boolean isProcessing = false;
+const int allowableLimitError = 10;
 
 // State
 int elem = 5;
@@ -90,19 +91,17 @@ void loop() {
   debugCode(rAvg, lAvg);
   
   //Left or Right
-  if((lAvg >= threshold) && (rAvg >= threshold)) {
+  if((abs(lAvg - rAvg) <= allowableLimitError) && ((lAvg >= threshold) && (rAvg >= threshold))) {
     isProcessing = true;
     state = 'B';
-  }else {
-    if(rAvg >= threshold) {
-      isProcessing = true;
-      state = 'R';
-    }
-    if(lAvg >= threshold) {
-      isProcessing = true;
-      state = 'L';
-    }
+  }else if(rAvg >= threshold && rAvg > lAvg) {
+    isProcessing = true;
+    state = 'R';
+  }else if(lAvg >= threshold && lAvg > rAvg) {
+    isProcessing = true;
+    state = 'L';
   }
+  
   
   switch (state) {
   case 'B':
